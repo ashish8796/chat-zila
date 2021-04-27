@@ -8,7 +8,8 @@ import {
 import React, { useState } from "react";
 
 import firebase from "firebase";
-import LogInByGoogle from "./LogInByGoogle";
+import LogInByGoogle from "./SignInByGoogle";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles({
   loginCont: {
@@ -33,12 +34,18 @@ const useStyles = makeStyles({
     display: "block",
     fontSize: "20px",
   },
+
+  signUpButton: {
+    cursor: "pointer",
+    color: "#f50057",
+  },
 });
 
 const initData = { email: "", password: "" };
 
-export default function Login() {
+export default function SignIn() {
   const classes = useStyles();
+  const history = useHistory();
   const [loginData, setLoginData] = useState(initData);
   const { email, password } = loginData;
 
@@ -64,9 +71,13 @@ export default function Login() {
       });
   };
 
+  const handleSignUpClick = () => {
+    history.push("signup");
+  };
+
   return (
     <Box component="section" className={classes.loginCont}>
-      <Typography variant="h3">Login</Typography>
+      <Typography variant="h3">Sign In</Typography>
 
       <LogInByGoogle />
 
@@ -104,8 +115,22 @@ export default function Login() {
           display="block"
           onClick={handleOnClick}
         >
-          Log In
+          Sign In
         </Button>
+      </Box>
+
+      <Box>
+        <Typography>
+          Don't have an account?{" "}
+          <Box
+            component="span"
+            color="secondary"
+            className={classes.signUpButton}
+            onClick={handleSignUpClick}
+          >
+            Sign Up
+          </Box>
+        </Typography>
       </Box>
     </Box>
   );

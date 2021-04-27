@@ -1,8 +1,9 @@
 import { Box } from "@material-ui/core";
-import React, { useState } from "react";
-import Login from "./Login/Login";
+import React, { useEffect, useState } from "react";
+import SignIn from "./SignIn/signIn";
 import SignUp from "./SignUp/SignUp";
 import firebase from "firebase";
+import { firebaseConfig } from "../../utils/appConfig";
 
 const initData = { email: "", password: "", query: "sign up" };
 
@@ -10,24 +11,26 @@ export default function Auth() {
   const [data, setData] = useState(initData);
   const [userData, setUserData] = useState({});
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAGL0wseceqxDncUYtWF4Sf2Q-KOYyq0zQ",
-    authDomain: "chat-zila.firebaseapp.com",
-    projectId: "chat-zila",
-    storageBucket: "chat-zila.appspot.com",
-    messagingSenderId: "1088747126796",
-    appId: "1:1088747126796:web:2aa1a0f5bb28cdbfa56e29",
-    measurementId: "G-GZK19188EQ",
-  };
+  useEffect(() => {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
 
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
+    const db = firebase.firestore();
+
+    db.collection("users")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          console.log(`${doc.id}=>${JSON.stringify(data)}`);
+        });
+      });
+  }, []);
 
   return (
     <Box display="flex" flexDirection="column">
-      <Login setData={setData} setUserData={setUserData} />
-      <SignUp setData={setData} />
+      <SignIn setData={setData} setUserData={setUserData} />
     </Box>
   );
 }
