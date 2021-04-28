@@ -10,6 +10,8 @@ import React, { useState } from "react";
 import firebase from "firebase";
 import LogInByGoogle from "./SignInByGoogle";
 import { useHistory } from "react-router";
+import { useDispatch } from "react-redux";
+import { signInUserByEmailAndPassword } from "../../../store/users/actions";
 
 const useStyles = makeStyles({
   loginCont: {
@@ -46,8 +48,11 @@ const initData = { email: "", password: "" };
 export default function SignIn() {
   const classes = useStyles();
   const history = useHistory();
+  const dispatch = useDispatch();
   const [loginData, setLoginData] = useState(initData);
   const { email, password } = loginData;
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -55,20 +60,7 @@ export default function SignIn() {
   };
 
   const handleOnClick = () => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Signed in
-        var user = userCredential.user;
-        console.log(user);
-        // ...
-      })
-      .catch((error) => {
-        console.log(error);
-        var errorCode = error.code;
-        var errorMessage = error.message;
-      });
+    dispatch(signInUserByEmailAndPassword(email, password));
   };
 
   const handleSignUpClick = () => {

@@ -1,6 +1,8 @@
 import { Box, Button, makeStyles, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import firebase from "firebase";
+import { signInUserByGoogle } from "../../../store/users/actions";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles({
   loginByGoogleButton: {
@@ -13,28 +15,12 @@ const useStyles = makeStyles({
 
 export default function LogInByGoogle() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  const handleLoginByGoogle = async () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-
-    firebase
-      .auth()
-      .signInWithPopup(provider)
-      .then((result) => {
-        const credential = result.credential;
-        console.log(credential);
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        console.log(error);
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // ...
-      });
+  const handleLoginByGoogle = () => {
+    dispatch(signInUserByGoogle());
   };
 
   return (
